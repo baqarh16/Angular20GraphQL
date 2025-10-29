@@ -1,5 +1,19 @@
 <div class="container">
-      <h1>GraphQL Demo with Angular 20 + SSR/SSG</h1>
-      <!-- MOCKDATA -->
-      <app-mockdata></app-mockdata>
-    </div>
+  <h1>GraphQL Demo with Angular 20 + SSR/SSG</h1>
+
+  <div class="button-group">
+    <button class="btn btn-mock" [class.active]="isMockDataVisible" (click)="isMockDataVisible = true" tabindex="0">
+      Mock Data
+    </button>
+    <button class="btn btn-api" [class.active]="!isMockDataVisible" (click)="isMockDataVisible = false" tabindex="0">
+      API Data
+    </button>
+  </div>
+
+  @if(isMockDataVisible) {
+  <app-mockdata></app-mockdata>
+  }
+  @else if(!isMockDataVisible){
+    <app-apidata></app-apidata>
+  }
+</div>

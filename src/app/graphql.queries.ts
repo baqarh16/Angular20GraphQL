@@ -32,3 +32,43 @@ export const GET_POSTS = gql`
     }
   }
 `;
+
+export const GET_API_USERS = gql`
+  query GetApiUsers {
+    users {
+      data {
+        id
+        name
+        email
+        username
+      }
+    }
+  }
+`;
+
+export const GET_API_POSTS = gql`
+  query GetApiPosts {
+    todos {
+      data {
+        id
+        title
+        completed
+        user {
+          id
+          name
+        }
+      }
+    }
+  }
+`;
+
+export const GET_API_USER = gql`
+  query GetApiUser($id: ID!) {
+    user(id: $id) {
+      id
+      name
+      email
+      username
+    }
+  }
+`;

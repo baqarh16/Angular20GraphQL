@@ -1,8 +1,8 @@
 // graphql.service.ts
 import { Injectable } from '@angular/core';
 import { from, Observable } from 'rxjs';
-import { apolloClientFactory } from '../../graphql.provider';
-import { GET_POSTS, GET_USER, GET_USERS } from '../../graphql.queries';
+import { apolloClientFactory, createApolloClient } from '../../graphql.provider';
+import { GET_API_POSTS, GET_API_USER, GET_API_USERS, GET_POSTS, GET_USER, GET_USERS } from '../../graphql.queries';
 
 export interface User {
   id: string;
@@ -18,11 +18,29 @@ export interface Post {
   authorId: string;
 }
 
+export interface ApiUser {
+  id: string;
+  name: string;
+  email: string;
+  username?: string;
+}
+
+export interface ApiPost {
+  id: string;
+  title: string;
+  completed: boolean;
+  user: {
+    id: string;
+    name: string;
+  };
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class GraphQL {
   private client = apolloClientFactory();
+  private apiClient = createApolloClient();
 
   getUsers(): Observable<User[]> {
     return from(
@@ -42,12 +60,12 @@ export class GraphQL {
         query: GET_USER,
         variables: { id }
       })
-      .then(result => {
-        if (!result.data?.user) {
-          throw new Error(`User with id ${id} not found`);
-        }
-        return result.data.user;
-      })
+        .then(result => {
+          if (!result.data?.user) {
+            throw new Error(`User with id ${id} not found`);
+          }
+          return result.data.user;
+        })
     );
   }
 
@@ -59,6 +77,38 @@ export class GraphQL {
             throw new Error('Failed to fetch posts: no data');
           }
           return result.data.posts;
+        })
+    );
+  }
+  
+  getApiUsers(): Observable<ApiUser[]> {
+    return from(
+      this.apiClient
+        .query<{ users: { data: ApiUser[] } }>({ query: GET_API_USERS })
+        .then(r => (r.data?.users?.data ?? []).slice(0, 5)) // Limit to 5
+    );
+  }
+
+  getApiPosts(): Observable<ApiPost[]> {
+    return from(
+      this.apiClient
+        .query<{ todos: { data: ApiPost[] } }>({ query: GET_API_POSTS })
+        .then(r => (r.data?.todos?.data ?? []).slice(0, 5)) // Limit to 5
+    );
+  }
+
+  getApiUser(id: string): Observable<ApiUser> {
+    return from(
+      this.apiClient
+        .query<{ user: ApiUser }>({
+          query: GET_API_USER,
+          variables: { id }
+        })
+        .then(result => {
+          if (!result.data?.user) {
+            throw new Error(`User with id ${id} not found`);
+          }
+          return result.data.user;
         })
     );
   }

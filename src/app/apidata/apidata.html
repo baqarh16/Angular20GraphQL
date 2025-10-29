@@ -1,0 +1,39 @@
+<section class="section">
+  <h2>Users (API Data)</h2>
+
+  @if (loadingUsers) {
+    <p class="loading">Loading users...</p>
+  } @else if (users.length > 0) {
+    <div class="grid">
+      @for (useruser of users; track useruser.id) {
+        <div class="card">
+          <h3>{{ useruser.name }}</h3>
+          <p><strong>Email:</strong> {{ useruser.email }}</p>
+          <p><strong>Username:</strong> {{ useruser.username || 'N/A' }}</p>
+        </div>
+      }
+    </div>
+  } @else {
+    <p class="loading">No users found</p>
+  }
+</section>
+
+<section class="section">
+  <h2>Posts (API Data)</h2>
+
+  @if (loadingPosts) {
+    <p class="loading">Loading posts...</p>
+  } @else if (posts.length > 0) {
+    <div class="posts">
+      @for (post of posts; track post.id) {
+        <article class="post-card">
+          <h3>{{ post.title }}</h3>
+          <p>{{ post.title }}</p>
+          <small>By User ID: {{ post.user.id }} ({{ post.user.name }})</small>
+        </article>
+      }
+    </div>
+  } @else {
+    <p class="loading">No posts found</p>
+  }
+</section>
